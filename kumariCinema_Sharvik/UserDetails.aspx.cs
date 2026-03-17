@@ -13,7 +13,7 @@ namespace kumariCinema_Sharvik
         {
             if (!IsPostBack)
             {
-                lblMessage.Visible = false;
+                ClearMessage();
             }
         }
 
@@ -129,7 +129,7 @@ namespace kumariCinema_Sharvik
         {
             if (e.Exception == null)
             {
-                ShowSuccessMessage("Access Granted: New user profile has been successfully encrypted and stored.");
+                ShowSuccessMessage("User registered successfully!");
                 GridViewUsers.DataBind(); // Refresh grid
             }
             else
@@ -137,15 +137,11 @@ namespace kumariCinema_Sharvik
                 string msg = e.Exception.Message;
                 if (msg.Contains("UNIQUE") || msg.Contains("ORA-00001"))
                 {
-                    ShowErrorMessage("Data Conflict: An account with this Email or Username already exists in the registry.");
-                }
-                else if (msg.Contains("ORA-01400"))
-                {
-                    ShowErrorMessage("Required Data Missing: Please ensure all fields including Email and Phone Number are filled out correctly.");
+                    ShowErrorMessage("Username or Email already exists.");
                 }
                 else
                 {
-                    ShowErrorMessage("Critical Failure: We encountered a system error while saving the profile. Please try again or contact support.");
+                    ShowErrorMessage("Error adding user: " + e.Exception.Message);
                 }
                 e.ExceptionHandled = true;
             }
@@ -166,17 +162,17 @@ namespace kumariCinema_Sharvik
                 int result = SqlDataSourceUsers.Update();
                 if (result > 0)
                 {
-                    ShowSuccessMessage("Update Confirmed: The user's profile has been successfully modified in the central registry.");
+                    ShowSuccessMessage("User updated successfully!");
                     GridViewUsers.DataBind();
                 }
                 else
                 {
-                    ShowErrorMessage("System Error: The update request was processed but no records were changed. Please refresh and try again.");
+                    ShowErrorMessage("No changes were made.");
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Critical Failure: We encountered a conflict while updating the profile. Details: " + ex.Message);
+                ShowErrorMessage("Update failed: " + ex.Message);
             }
         }
 
@@ -190,17 +186,17 @@ namespace kumariCinema_Sharvik
                 
                 if (result > 0)
                 {
-                    ShowSuccessMessage("Identity Purged: The user profile has been permanently removed from the cinema database.");
+                    ShowSuccessMessage("User deleted successfully.");
                     GridViewUsers.DataBind();
                 }
                 else
                 {
-                    ShowErrorMessage("System Error: The deletion request was processed but the record could not be located. It may have already been removed.");
+                    ShowErrorMessage("User not found.");
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Critical Failure: We encountered a database constraint preventing this deletion. Details: " + ex.Message);
+                ShowErrorMessage("Delete failed: " + ex.Message);
             }
         }
 

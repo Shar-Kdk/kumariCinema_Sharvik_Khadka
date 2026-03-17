@@ -27,7 +27,7 @@
                                         <label class="form-label fw-bold">Full Name</label>
                                         <asp:TextBox ID="txtUsername" runat="server" Text='<%# Bind("Username") %>' CssClass="form-control" placeholder="Enter name"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="rfvUsername" runat="server" ControlToValidate="txtUsername" 
-                                            ErrorMessage="The user's full name is required for registration." 
+                                            ErrorMessage="Full name is required" 
                                             Text="*" Display="Dynamic" CssClass="text-danger fw-bold"
                                             ValidationGroup="VGUserInsert"></asp:RequiredFieldValidator>
                                     </div>
@@ -42,7 +42,7 @@
                                             </button>
                                         </div>
                                         <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ControlToValidate="txtPassword" 
-                                            ErrorMessage="A password is required to secure this account." 
+                                            ErrorMessage="Password is required" 
                                             Text="*" Display="Dynamic" CssClass="text-danger fw-bold"
                                             ValidationGroup="VGUserInsert"></asp:RequiredFieldValidator>
                                     </div>
@@ -51,11 +51,11 @@
                                         <label class="form-label fw-bold">Email Address</label>
                                         <asp:TextBox ID="txtEmail" runat="server" Text='<%# Bind("Email") %>' CssClass="form-control" placeholder="user@example.com"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" 
-                                            ErrorMessage="An email address is required for communication and login." 
+                                            ErrorMessage="Email is required" 
                                             Text="*" Display="Dynamic" CssClass="text-danger fw-bold"
                                             ValidationGroup="VGUserInsert"></asp:RequiredFieldValidator>
                                         <asp:RegularExpressionValidator ID="revEmail" runat="server" ControlToValidate="txtEmail" 
-                                            ErrorMessage="The email address provided is not in a valid format (e.g., name@domain.com)." 
+                                            ErrorMessage="Invalid email format" 
                                             Text="*" ValidationExpression="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" 
                                             Display="Dynamic" CssClass="text-danger fw-bold"
                                             ValidationGroup="VGUserInsert"></asp:RegularExpressionValidator>
@@ -65,11 +65,11 @@
                                         <label class="form-label fw-bold">Phone Number</label>
                                         <asp:TextBox ID="txtPhone" runat="server" Text='<%# Bind("PhoneNumber") %>' CssClass="form-control" placeholder="98XXXXXXXX"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="rfvPhone" runat="server" ControlToValidate="txtPhone" 
-                                            ErrorMessage="A phone number is required for account security." 
+                                            ErrorMessage="Phone number is required" 
                                             Text="*" Display="Dynamic" CssClass="text-danger fw-bold"
                                             ValidationGroup="VGUserInsert"></asp:RequiredFieldValidator>
                                         <asp:RegularExpressionValidator ID="revPhone" runat="server" ControlToValidate="txtPhone" 
-                                            ErrorMessage="Phone numbers must be 10 digits and start with 98 or 97 for local compatibility." 
+                                            ErrorMessage="Invalid phone (must be 10 digits)" 
                                             Text="*" ValidationExpression="^(98|97)\d{8}$" 
                                             Display="Dynamic" CssClass="text-danger fw-bold"
                                             ValidationGroup="VGUserInsert"></asp:RegularExpressionValidator>
@@ -95,10 +95,10 @@
                         </Fields>
                     </asp:DetailsView>
                     <div class="mt-3">
-                        <asp:Label ID="lblMessage" runat="server" CssClass="d-block text-center rounded-3 p-2 small fw-bold" Visible="false"></asp:Label>
+                        <asp:Label ID="lblMessage" runat="server" CssClass="d-block text-center rounded-3 p-2 small fw-bold" Visible="false" EnableViewState="false"></asp:Label>
                         <asp:ValidationSummary ID="vsUser" runat="server" ValidationGroup="VGUserInsert" 
                             CssClass="alert alert-danger extra-small border-0 shadow-none py-2 px-3 mt-2" 
-                            HeaderText="Please correct the following:" />
+                            HeaderText="Please correct the following:" EnableViewState="false" />
                     </div>
                 </div>
             </div>

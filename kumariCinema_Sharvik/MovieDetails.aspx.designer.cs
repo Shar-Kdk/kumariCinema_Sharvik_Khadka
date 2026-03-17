@@ -12,5 +12,16 @@ namespace kumariCinema_Sharvik
         protected global::System.Web.UI.WebControls.DetailsView DetailsViewMovie;
         protected global::System.Web.UI.WebControls.Label lblMessage;
         protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSourceMovies;
+        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+        protected global::System.Web.UI.WebControls.LinkButton btnClearSearch;
+        protected global::System.Web.UI.WebControls.HiddenField hfEditMovieID;
+        protected global::System.Web.UI.WebControls.TextBox txtEditTitleModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditGenreModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditDurationModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditLangModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditReleaseModal;
+        protected global::System.Web.UI.WebControls.Button btnSaveEdit;
+        protected global::System.Web.UI.WebControls.HiddenField hfDeleteMovieID;
+        protected global::System.Web.UI.WebControls.Button btnConfirmDelete;
     }
 }

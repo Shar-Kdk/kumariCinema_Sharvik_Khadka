@@ -70,5 +70,41 @@
         </div>
     </form>
     <script src='<%= ResolveUrl("~/Scripts/bootstrap.bundle.min.js") %>'></script>
+    <script type="text/javascript">
+        // Auto-hide SUCCESS messages only (errors stay visible)
+        (function () {
+            function fadeOutSuccess(el) {
+                if (!el || el.dataset.hiding === "true") return;
+                var text = el.innerText || el.textContent;
+                if (!text || text.trim().length < 2) return;
+
+                el.dataset.hiding = "true";
+                setTimeout(function () {
+                    el.style.transition = "opacity 0.6s ease";
+                    el.style.opacity = "0";
+                    setTimeout(function () { el.style.display = "none"; }, 600);
+                }, 5000);
+            }
+
+            function checkSuccessMessages() {
+                // Only auto-hide success-styled elements
+                document.querySelectorAll('.bg-success, .alert-success').forEach(function (el) {
+                    if (el.offsetWidth > 0 || el.offsetHeight > 0) fadeOutSuccess(el);
+                });
+                // Also check lblMessage if it has the success class
+                document.querySelectorAll('[id$="lblMessage"]').forEach(function (el) {
+                    if (el.className.indexOf('text-success') > -1 && (el.offsetWidth > 0 || el.offsetHeight > 0)) {
+                        fadeOutSuccess(el);
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", checkSuccessMessages);
+
+            // Watch for newly rendered success messages after postback
+            var observer = new MutationObserver(checkSuccessMessages);
+            observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        })();
+    </script>
 </body>
 </html>
