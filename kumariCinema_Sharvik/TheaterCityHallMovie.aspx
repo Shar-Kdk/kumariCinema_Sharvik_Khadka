@@ -1,4 +1,4 @@
-<%@ Page Title="Theater Schedule" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="TheaterCityHallMovie.aspx.cs" Inherits="kumariCinema_Sharvik.TheaterCityHallMovie" %>
+<%@ Page Title="Theater Schedule" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="TheaterCityHallMovie.aspx.cs" Inherits="kumariCinema_Sharvik.TheaterCityHallMovie" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-header">

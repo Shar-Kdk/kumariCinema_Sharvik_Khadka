@@ -8,16 +8,50 @@ namespace kumariCinema_Sharvik
 {
     public partial class TheaterCityHallDetails
     {
+        protected global::System.Web.UI.WebControls.Label lblMessage;
+        protected global::System.Web.UI.WebControls.TextBox txtSearchTheater;
         protected global::System.Web.UI.WebControls.GridView GridViewTheaters;
         protected global::System.Web.UI.WebControls.DetailsView DetailsViewTheater;
         protected global::System.Web.UI.WebControls.Label lblTheaterMessage;
         protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSourceTheaters;
+        protected global::System.Web.UI.WebControls.HiddenField hfEditTheaterID;
+        protected global::System.Web.UI.WebControls.TextBox txtEditTheaterNameModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditTheaterCityModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditTheaterAddressModal;
+        protected global::System.Web.UI.WebControls.Button btnSaveTheaterEdit;
+        protected global::System.Web.UI.WebControls.HiddenField hfDeleteTheaterID;
+        protected global::System.Web.UI.WebControls.Button btnConfirmTheaterDelete;
 
         protected global::System.Web.UI.WebControls.GridView GridViewHalls;
+        protected global::System.Web.UI.WebControls.DropDownList DdlFilterTheater;
         protected global::System.Web.UI.WebControls.DetailsView DetailsViewHall;
         protected global::System.Web.UI.WebControls.Label lblHallMessage;
         protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSourceHalls;
         
         protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSourceTheaterDropdown;
+        
+        protected global::System.Web.UI.WebControls.DetailsView DetailsViewSeat;
+        protected global::System.Web.UI.WebControls.Label lblSeatMessage;
+        protected global::System.Web.UI.WebControls.ListView ListViewSeats;
+        
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSourceSeats;
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSourceHallDropdown;
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSourceAllHalls;
+        protected global::System.Web.UI.WebControls.DropDownList DdlFilterHall;
+        protected global::System.Web.UI.WebControls.HiddenField hfEditHallID;
+        protected global::System.Web.UI.WebControls.TextBox txtEditHallNameModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditHallCapModal;
+        protected global::System.Web.UI.WebControls.DropDownList DdlEditHallTheaterModal;
+        protected global::System.Web.UI.WebControls.Button btnSaveHallEdit;
+        protected global::System.Web.UI.WebControls.HiddenField hfDeleteHallID;
+        protected global::System.Web.UI.WebControls.Button btnConfirmHallDelete;
+        protected global::System.Web.UI.WebControls.HiddenField hfEditSeatID;
+        protected global::System.Web.UI.WebControls.TextBox txtEditSeatNumModal;
+        protected global::System.Web.UI.WebControls.TextBox txtEditSeatRowModal;
+        protected global::System.Web.UI.WebControls.DropDownList DdlEditSeatStatusModal;
+        protected global::System.Web.UI.WebControls.DropDownList DdlEditSeatHallModal;
+        protected global::System.Web.UI.WebControls.Button btnSaveSeatEdit;
+        protected global::System.Web.UI.WebControls.HiddenField hfDeleteSeatID;
+        protected global::System.Web.UI.WebControls.Button btnConfirmSeatDelete;
     }
 }

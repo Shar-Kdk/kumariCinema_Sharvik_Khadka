@@ -1,4 +1,4 @@
-<%@ Page Title="Movie Management" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="MovieDetails.aspx.cs" Inherits="kumariCinema_Sharvik.MovieDetails" %>
+<%@ Page Title="Movie Management" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MovieDetails.aspx.cs" Inherits="kumariCinema_Sharvik.MovieDetails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-header">
@@ -131,18 +131,18 @@
                             <asp:TemplateField HeaderText="ACTION">
                                 <ItemTemplate>
                                     <div class="d-flex gap-2">
-                                        <button type="button" class="btn-action text-info" title="View Details" 
-                                            onclick='<%# GetQuickViewScript(Eval("Title"), Eval("Genre"), Eval("Duration"), Eval("Language"), Eval("ReleaseDate")) %>'>
+                                        <asp:LinkButton ID="lnkView" runat="server" CssClass="btn-action text-info" ToolTip="View Details"
+                                            OnClientClick='<%# GetQuickViewScript(Eval("Title"), Eval("Genre"), Eval("Duration"), Eval("Language"), Eval("ReleaseDate")) %>'>
                                             <i class="bi bi-eye-fill"></i>
-                                        </button>
-                                        <button type="button" class="btn-action text-primary" title="Edit Movie"
-                                            onclick='<%# GetEditModalScript(Eval("MovieID"), Eval("Title"), Eval("Genre"), Eval("Duration"), Eval("Language"), Eval("ReleaseDate")) %>'>
+                                        </asp:LinkButton>
+                                        <asp:LinkButton ID="lnkEdit" runat="server" CssClass="btn-action text-primary" ToolTip="Edit Movie"
+                                            OnClientClick='<%# GetEditModalScript(Eval("MovieID"), Eval("Title"), Eval("Genre"), Eval("Duration"), Eval("Language"), Eval("ReleaseDate")) %>'>
                                             <i class="bi bi-pencil-fill"></i>
-                                        </button>
-                                        <button type="button" class="btn-action text-danger" title="Delete Movie" 
-                                            onclick='<%# GetDeleteModalScript(Eval("MovieID"), Eval("Title")) %>'>
+                                        </asp:LinkButton>
+                                        <asp:LinkButton ID="lnkDelete" runat="server" CssClass="btn-action text-danger" ToolTip="Delete Movie"
+                                            OnClientClick='<%# GetDeleteModalScript(Eval("MovieID"), Eval("Title")) %>'>
                                             <i class="bi bi-trash3-fill"></i>
-                                        </button>
+                                        </asp:LinkButton>
                                     </div>
                                 </ItemTemplate>
                             </asp:TemplateField>

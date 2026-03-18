@@ -33,6 +33,10 @@ body {
     color: #fff;
     flex-shrink: 0;
     transition: all 0.3s;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
 }
 
 #content-wrapper {

@@ -47,8 +47,7 @@
                 <div class="sidebar-heading">MANAGEMENT</div>
                 <a class="nav-link-custom" href="~/UserDetails.aspx" runat="server"><i class="bi bi-people-fill"></i> Users</a>
                 <a class="nav-link-custom" href="~/MovieDetails.aspx" runat="server"><i class="bi bi-film"></i> Movies</a>
-                <a class="nav-link-custom" href="~/TheaterDetails.aspx" runat="server"><i class="bi bi-geo-alt-fill"></i> Theaters</a>
-                <a class="nav-link-custom" href="~/TheaterCityHallDetails.aspx" runat="server"><i class="bi bi-building-up"></i> Halls</a>
+                <a class="nav-link-custom" href="~/TheaterCityHallDetails.aspx" runat="server"><i class="bi bi-building-gear"></i> TheaterCityHallDetails</a>
                 <a class="nav-link-custom" href="~/ShowtimesDetails.aspx" runat="server"><i class="bi bi-calendar-event-fill"></i> Showtimes</a>
                 <a class="nav-link-custom" href="~/TicketDetails.aspx" runat="server"><i class="bi bi-ticket-perforated-fill"></i> Tickets</a>
 

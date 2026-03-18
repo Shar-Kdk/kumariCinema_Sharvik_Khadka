@@ -1,0 +1,3 @@
+﻿MSBuild version 18.4.0+6e61e96ac for .NET Framework
+
+C:\Users\nitro\source\repos\kumariCinema_Sharvik\kumariCinema_Sharvik\TheaterCityHallDetails.aspx.cs(128,14): error CS1513: } expected [C:\Users\nitro\source\repos\kumariCinema_Sharvik\kumariCinema_Sharvik\kumariCinema_Sharvik.csproj]

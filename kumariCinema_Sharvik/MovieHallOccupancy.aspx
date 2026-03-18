@@ -1,4 +1,4 @@
-<%@ Page Title="Occupancy Insights" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="MovieHallOccupancy.aspx.cs" Inherits="kumariCinema_Sharvik.MovieHallOccupancy" %>
+<%@ Page Title="Occupancy Insights" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MovieHallOccupancy.aspx.cs" Inherits="kumariCinema_Sharvik.MovieHallOccupancy" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-header">
@@ -60,10 +60,13 @@
                             <asp:TemplateField HeaderText="Traffic Volume">
                                 <ItemTemplate>
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="progress flex-grow-1" style="height: 8px; min-width: 100px;">
-                                            <div class="progress-bar bg-danger" style='width: <%# (Convert.ToInt32(Eval("OCCUPIED_SEATS")) * 5).ToString() %>%'></div>
+                                        <div class="progress flex-grow-1" style="height: 10px; min-width: 120px;">
+                                            <div class="progress-bar bg-danger shadow-sm" style='<%# "width: " + Eval("OCCUPANCY_PERCENT") + "%;" %>'></div>
                                         </div>
-                                        <span class="fw-bold text-danger font-monospace"><%# Eval("OCCUPIED_SEATS") %> Tickets</span>
+                                        <div class="text-end">
+                                            <div class="fw-bold text-danger font-monospace"><%# Eval("OCCUPANCY_PERCENT") %>% Occupancy</div>
+                                            <div class="extra-small text-muted"><%# Eval("PAID_TICKETS") %> Paid / <%# Eval("CAPACITY") %> Capacity</div>
+                                        </div>
                                     </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
@@ -93,15 +96,19 @@
         ConnectionString="<%$ ConnectionStrings:KumariCinemaDB %>" 
         ProviderName="<%$ ConnectionStrings:KumariCinemaDB.ProviderName %>" 
         SelectCommand="SELECT * FROM (
-                         SELECT h.HALLNAME, t.THEATERNAME, COUNT(bt.TICKETID) as OCCUPIED_SEATS
+                         SELECT h.HALLNAME, t.THEATERNAME, 
+                                COUNT(CASE WHEN ti.TICKETSTATUS = 'Confirmed' THEN 1 END) as PAID_TICKETS,
+                                h.CAPACITY,
+                                ROUND((COUNT(CASE WHEN ti.TICKETSTATUS = 'Confirmed' THEN 1 END) / h.CAPACITY) * 100, 1) as OCCUPANCY_PERCENT
                          FROM THEATER t
                          JOIN HALL h ON t.THEATERID = h.THEATERID
                          JOIN &quot;SHOW&quot; s ON h.HALLID = s.HALLID
                          JOIN BOOKING b ON s.SHOWID = b.SHOWID
                          JOIN BOOKING_TICKET bt ON b.BOOKINGID = bt.BOOKINGID
+                         JOIN TICKET ti ON bt.TICKETID = ti.TICKETID
                          WHERE s.MOVIEID = :MovieID
-                         GROUP BY h.HALLNAME, t.THEATERNAME
-                         ORDER BY OCCUPIED_SEATS DESC
+                         GROUP BY h.HALLNAME, t.THEATERNAME, h.CAPACITY
+                         ORDER BY OCCUPANCY_PERCENT DESC
                        ) WHERE ROWNUM <= 3">
         <SelectParameters>
             <asp:ControlParameter ControlID="DdlMovies" Name="MovieID" PropertyName="SelectedValue" Type="Decimal" />

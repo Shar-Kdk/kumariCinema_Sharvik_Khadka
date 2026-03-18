@@ -1,4 +1,4 @@
-<%@ Page Title="User Activity Report" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="UserTicket.aspx.cs" Inherits="kumariCinema_Sharvik.UserTicket" %>
+<%@ Page Title="My Tickets" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserTicket.aspx.cs" Inherits="kumariCinema_Sharvik.UserTicket" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-header">

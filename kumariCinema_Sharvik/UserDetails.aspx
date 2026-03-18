@@ -1,4 +1,4 @@
-<%@ Page Title="User Management" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="UserDetails.aspx.cs" Inherits="kumariCinema_Sharvik.UserDetails" %>
+<%@ Page Title="User Management" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserDetails.aspx.cs" Inherits="kumariCinema_Sharvik.UserDetails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-header">
@@ -133,7 +133,7 @@
                                 <ItemTemplate>
                                     <div class="d-flex align-items-center gap-3 py-1">
                                         <div class="avatar-circle bg-primary-subtle text-primary border border-primary-subtle">
-                                            <%# Eval("Username").ToString().Substring(0,1).ToUpper() %>
+                                            <%# !string.IsNullOrEmpty(Eval("Username")?.ToString()) ? Eval("Username").ToString().Substring(0,1).ToUpper() : "?" %>
                                         </div>
                                         <div>
                                             <div class="fw-bold text-dark"><%# Eval("Username") %></div>
@@ -163,18 +163,18 @@
                             <asp:TemplateField HeaderText="action">
                                 <ItemTemplate>
                                     <div class="d-flex gap-2">
-                                        <button type="button" class="btn-action text-info" title="Quick View" 
-                                            onclick='<%# GetQuickViewScript(Eval("Username"), Eval("Email"), Eval("PhoneNumber"), Eval("Address"), Eval("RegistrationDate")) %>'>
+                                        <asp:LinkButton ID="lnkView" runat="server" CssClass="btn-action text-info" ToolTip="Quick View"
+                                            OnClientClick='<%# GetQuickViewScript(Eval("Username"), Eval("Email"), Eval("PhoneNumber"), Eval("Address"), Eval("RegistrationDate")) %>'>
                                             <i class="bi bi-eye-fill"></i>
-                                        </button>
-                                        <button type="button" class="btn-action text-primary" title="Edit Profile"
-                                            onclick='<%# GetEditModalScript(Eval("UserID"), Eval("Username"), Eval("Email"), Eval("PhoneNumber"), Eval("Address"), Eval("RegistrationDate")) %>'>
+                                        </asp:LinkButton>
+                                        <asp:LinkButton ID="lnkEdit" runat="server" CssClass="btn-action text-primary" ToolTip="Edit Profile"
+                                            OnClientClick='<%# GetEditModalScript(Eval("UserID"), Eval("Username"), Eval("Email"), Eval("PhoneNumber"), Eval("Address"), Eval("RegistrationDate")) %>'>
                                             <i class="bi bi-pencil-fill"></i>
-                                        </button>
-                                        <button type="button" class="btn-action text-danger" title="Delete Account" 
-                                            onclick='<%# GetDeleteModalScript(Eval("UserID"), Eval("Username")) %>'>
+                                        </asp:LinkButton>
+                                        <asp:LinkButton ID="lnkDelete" runat="server" CssClass="btn-action text-danger" ToolTip="Delete Account"
+                                            OnClientClick='<%# GetDeleteModalScript(Eval("UserID"), Eval("Username")) %>'>
                                             <i class="bi bi-trash3-fill"></i>
-                                        </button>
+                                        </asp:LinkButton>
                                     </div>
                                 </ItemTemplate>
                             </asp:TemplateField>

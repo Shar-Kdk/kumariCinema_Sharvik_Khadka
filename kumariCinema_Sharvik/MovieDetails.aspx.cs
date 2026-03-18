@@ -187,7 +187,7 @@ namespace kumariCinema_Sharvik
                     ShowErrorMessage("Movie not found.");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ShowErrorMessage("Delete failed. It might be linked to other records.");
             }

@@ -1,4 +1,4 @@
-<%@ Page Title="Showtimes Scheduling" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="ShowtimesDetails.aspx.cs" Inherits="kumariCinema_Sharvik.ShowtimesDetails" %>
+<%@ Page Title="Showtime Management" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="ShowtimesDetails.aspx.cs" Inherits="kumariCinema_Sharvik.ShowtimesDetails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-header">
@@ -7,9 +7,10 @@
             <p>Manage showtimes, pricing, and theater availability.</p>
         </div>
         <div class="page-header-actions">
-             <div class="btn-group">
-                 <button type="button" class="btn btn-outline-secondary btn-sm">Today</button>
-                 <button type="button" class="btn btn-outline-secondary btn-sm">This Week</button>
+             <div class="btn-group shadow-sm">
+                 <asp:LinkButton ID="btnFilterAll" runat="server" CssClass="btn btn-outline-secondary btn-sm active" OnClick="btnFilter_Click" CommandArgument="All">All</asp:LinkButton>
+                 <asp:LinkButton ID="btnFilterToday" runat="server" CssClass="btn btn-outline-secondary btn-sm" OnClick="btnFilter_Click" CommandArgument="Today">Today</asp:LinkButton>
+                 <asp:LinkButton ID="btnFilterThisWeek" runat="server" CssClass="btn btn-outline-secondary btn-sm" OnClick="btnFilter_Click" CommandArgument="Week">This Week</asp:LinkButton>
              </div>
         </div>
     </div>
@@ -31,62 +32,87 @@
                                 <InsertItemTemplate>
                                     <div class="row g-2">
                                         <div class="col-7">
-                                            <label class="mb-1">Show Date</label>
+                                            <label class="mb-1 form-label fw-semibold small text-muted">Show Date</label>
                                             <asp:TextBox ID="txtShowDate" runat="server" Text='<%# Bind("SHOWDATE") %>' TextMode="Date" CssClass="form-control"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="rfvShowDate" runat="server" ControlToValidate="txtShowDate" 
+                                                ErrorMessage="Date is required" Text="*" Display="Dynamic" CssClass="text-danger fw-bold" ValidationGroup="VGShowInsert"></asp:RequiredFieldValidator>
                                         </div>
                                         <div class="col-5">
-                                            <label class="mb-1">Time</label>
-                                            <asp:TextBox ID="txtShowTime" runat="server" Text='<%# Bind("SHOWTIME") %>' TextMode="Time" CssClass="form-control"></asp:TextBox>
+                                            <label class="mb-1 form-label fw-semibold small text-muted">Time</label>
+                                            <asp:DropDownList ID="DdlShowTime" runat="server" CssClass="form-select" SelectedValue='<%# Bind("SHOWTIME") %>'>
+                                                <asp:ListItem Text="-- Select --" Value="" />
+                                                <asp:ListItem Text="Morning (10:00)" Value="Morning" />
+                                                <asp:ListItem Text="Evening (18:00)" Value="Evening" />
+                                                <asp:ListItem Text="Night (21:00)" Value="Night" />
+                                            </asp:DropDownList>
+                                            <asp:RequiredFieldValidator ID="rfvShowTime" runat="server" ControlToValidate="DdlShowTime" InitialValue="" 
+                                                ErrorMessage="Time is required" Text="*" Display="Dynamic" CssClass="text-danger fw-bold" ValidationGroup="VGShowInsert"></asp:RequiredFieldValidator>
                                         </div>
                                     </div>
                                 </InsertItemTemplate>
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Tariff">
+                            <asp:TemplateField HeaderText="Show price">
                                 <InsertItemTemplate>
-                                    <label class="mb-1">Ticket Price (Rs.)</label>
-                                    <asp:TextBox ID="txtPrice" runat="server" Text='<%# Bind("SHOWPRICE") %>' TextMode="Number" CssClass="form-control" step="0.01" placeholder="450"></asp:TextBox>
-                                </InsertItemTemplate>
-                            </asp:TemplateField>
-
-                            <asp:TemplateField HeaderText="Special Flags">
-                                <InsertItemTemplate>
-                                    <div class="d-flex gap-3 mt-1">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="chkHoliday">
-                                            <label class="form-check-label small" for="chkHoliday">Holiday</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="chkNew">
-                                            <label class="form-check-label small" for="chkNew">New Release</label>
-                                        </div>
-                                    </div>
-                                    <!-- Hidden fields for actual binding if needed, or handled in code-behind -->
-                                    <asp:HiddenField ID="hdnHoliday" runat="server" Value='<%# Bind("ISHOLIDAY") %>' />
-                                    <asp:HiddenField ID="hdnNew" runat="server" Value='<%# Bind("ISNEWRELEASE") %>' />
+                                    <label class="mb-1 form-label fw-semibold small text-muted">Ticket Price (Rs.)</label>
+                                    <asp:TextBox ID="txtPrice" runat="server" Text='<%# Bind("SHOWPRICE") %>' TextMode="Number" CssClass="form-control" step="0.01" placeholder="e.g. 450"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="rfvPrice" runat="server" ControlToValidate="txtPrice" 
+                                        ErrorMessage="Price is required" Text="*" Display="Dynamic" CssClass="text-danger fw-bold" ValidationGroup="VGShowInsert"></asp:RequiredFieldValidator>
                                 </InsertItemTemplate>
                             </asp:TemplateField>
                             
-                            <asp:TemplateField HeaderText="Booking Detail">
+                            <asp:TemplateField HeaderText="">
                                 <InsertItemTemplate>
-                                    <label class="mb-1">Select Movie</label>
-                                    <asp:DropDownList ID="DdlInsertMovie" runat="server" CssClass="form-select mb-2"
-                                        DataSourceID="SqlDataSourceMovieDropdown" DataTextField="TITLE" DataValueField="MOVIEID" 
-                                        SelectedValue='<%# Bind("MOVIEID") %>'></asp:DropDownList>
-                                    
-                                    <label class="mb-1">Select Hall</label>
-                                    <asp:DropDownList ID="DdlInsertHall" runat="server" CssClass="form-select"
-                                        DataSourceID="SqlDataSourceHallDropdown" DataTextField="HALLNAME" DataValueField="HALLID" 
-                                        SelectedValue='<%# Bind("HALLID") %>'></asp:DropDownList>
+                                    <div class="d-flex gap-4 mt-1">
+                                        <div class="form-check d-flex align-items-center gap-2">
+                                            <asp:CheckBox ID="chkInsertHoliday" runat="server" CssClass="form-check-input-custom" />
+                                            <asp:Label ID="lblInsertHoliday" runat="server" AssociatedControlID="chkInsertHoliday" CssClass="form-check-label small text-muted">Holiday</asp:Label>
+                                        </div>
+                                        <div class="form-check d-flex align-items-center gap-2">
+                                            <asp:CheckBox ID="chkInsertNew" runat="server" CssClass="form-check-input-custom" />
+                                            <asp:Label ID="lblInsertNew" runat="server" AssociatedControlID="chkInsertNew" CssClass="form-check-label small text-muted">New Release</asp:Label>
+                                        </div>
+                                    </div>
                                 </InsertItemTemplate>
                             </asp:TemplateField>
 
-                            <asp:CommandField ShowInsertButton="True" ButtonType="Button" InsertText="Update Schedule" ControlStyle-CssClass="btn btn-info text-white w-100 mt-4" />
+                            <asp:TemplateField HeaderText="Booking Detail">
+                                <InsertItemTemplate>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="mb-1 form-label fw-semibold small text-muted">Select Movie</label>
+                                            <asp:DropDownList ID="DdlInsertMovie" runat="server" CssClass="form-select mb-2"
+                                                DataSourceID="SqlDataSourceMovieDropdown" DataTextField="TITLE" DataValueField="MOVIEID" 
+                                                SelectedValue='<%# Bind("MOVIEID") %>' AppendDataBoundItems="true">
+                                                <asp:ListItem Text="-- Select --" Value=""></asp:ListItem>
+                                            </asp:DropDownList>
+                                            <asp:RequiredFieldValidator ID="rfvInsertMovie" runat="server" ControlToValidate="DdlInsertMovie" InitialValue="" 
+                                                ErrorMessage="Movie selection is required" Text="*" Display="Dynamic" CssClass="text-danger fw-bold" ValidationGroup="VGShowInsert"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="mb-1 form-label fw-semibold small text-muted">Select Hall</label>
+                                            <asp:DropDownList ID="DdlInsertHall" runat="server" CssClass="form-select"
+                                                DataSourceID="SqlDataSourceHallDropdown" DataTextField="HALLNAME" DataValueField="HALLID" 
+                                                SelectedValue='<%# Bind("HALLID") %>' AppendDataBoundItems="true">
+                                                <asp:ListItem Text="-- Select --" Value=""></asp:ListItem>
+                                            </asp:DropDownList>
+                                            <asp:RequiredFieldValidator ID="rfvInsertHall" runat="server" ControlToValidate="DdlInsertHall" InitialValue="" 
+                                                ErrorMessage="Hall selection is required" Text="*" Display="Dynamic" CssClass="text-danger fw-bold" ValidationGroup="VGShowInsert"></asp:RequiredFieldValidator>
+                                        </div>
+                                    </div>
+                                </InsertItemTemplate>
+                            </asp:TemplateField>
+
+                            <asp:TemplateField>
+                                <InsertItemTemplate>
+                                    <asp:Button ID="btnInsertShow" runat="server" CommandName="Insert" Text="Add Show" CssClass="btn btn-info text-white w-100 py-2 fw-medium mt-3" ValidationGroup="VGShowInsert" />
+                                    <asp:Button ID="btnCancelShow" runat="server" CommandName="Cancel" Text="Reset Form" CssClass="btn btn-outline-secondary w-100 mt-2 py-2 fw-bold" CausesValidation="false" />
+                                </InsertItemTemplate>
+                            </asp:TemplateField>
                         </Fields>
                     </asp:DetailsView>
-                    <div class="mt-3 text-center">
-                        <asp:Label ID="lblMessage" runat="server" CssClass="text-success fw-bold"></asp:Label>
-                    </div>
+                    <asp:ValidationSummary ID="vsShowInsert" runat="server" ValidationGroup="VGShowInsert" CssClass="alert alert-danger extra-small border-0 shadow-none py-2 px-3 mt-2" DisplayMode="BulletList" />
+                    <asp:Label ID="lblMessage" runat="server" Visible="false" EnableViewState="false"></asp:Label>
                 </div>
             </div>
         </div>
@@ -108,73 +134,263 @@
 
                             <asp:TemplateField HeaderText="Time & Date">
                                 <ItemTemplate>
-                                    <div class="fw-bold text-main"><%# Eval("SHOWTIME") %></div>
-                                    <div class="extra-small text-muted"><%# Eval("SHOWDATE", "{0:MMM dd, yyyy}") %></div>
+                                    <div class="fw-bold text-main">
+                                        <i class="bi bi-clock me-1 text-muted"></i><%# Eval("SHOWTIME") %>
+                                        <span class="text-muted small fw-normal"> (<%# GetSpecificShowTime(Eval("SHOWTIME")) %>)</span>
+                                    </div>
+                                    <div class="extra-small text-muted"><i class="bi bi-calendar3 me-1"></i><%# Eval("SHOWDATE", "{0:MMM dd, yyyy}") %></div>
                                 </ItemTemplate>
-                                <EditItemTemplate>
-                                    <asp:TextBox ID="txtEditDate" runat="server" Text='<%# Bind("SHOWDATE") %>' TextMode="Date" CssClass="form-control form-control-sm mb-1"></asp:TextBox>
-                                    <asp:TextBox ID="txtEditTime" runat="server" Text='<%# Bind("SHOWTIME") %>' TextMode="Time" CssClass="form-control form-control-sm"></asp:TextBox>
-                                </EditItemTemplate>
                             </asp:TemplateField>
 
                             <asp:TemplateField HeaderText="Feature & Venue">
                                 <ItemTemplate>
-                                    <div class="fw-semibold text-primary small"><%# Eval("MovieTitle") %></div>
-                                    <div class="extra-small text-muted"><i class="bi bi-geo-alt"></i> <%# Eval("HallName") %></div>
+                                    <div class="fw-semibold text-primary small d-flex align-items-center gap-1">
+                                        <%# Eval("MovieTitle") %><%# GetBadgeHtml(Eval("ISNEWRELEASE"), "New") %>
+                                    </div>
+                                    <div class="extra-small text-muted d-flex align-items-center gap-2">
+                                        <span><i class="bi bi-geo-alt"></i> <%# Eval("HallName") %></span><%# GetBadgeHtml(Eval("ISHOLIDAY"), "Holiday") %>
+                                    </div>
                                 </ItemTemplate>
-                                <EditItemTemplate>
-                                    <asp:DropDownList ID="DdlEditMovie" runat="server" CssClass="form-select form-select-sm mb-1"
-                                        DataSourceID="SqlDataSourceMovieDropdown" DataTextField="TITLE" DataValueField="MOVIEID" 
-                                        SelectedValue='<%# Bind("MOVIEID") %>'></asp:DropDownList>
-                                    <asp:DropDownList ID="DdlEditHall" runat="server" CssClass="form-select form-select-sm"
-                                        DataSourceID="SqlDataSourceHallDropdown" DataTextField="HALLNAME" DataValueField="HALLID" 
-                                        SelectedValue='<%# Bind("HALLID") %>'></asp:DropDownList>
-                                </EditItemTemplate>
                             </asp:TemplateField>
 
                             <asp:TemplateField HeaderText="Pricing">
                                 <ItemTemplate>
                                     <div class="fw-bold text-success font-monospace">Rs. <%# Eval("SHOWPRICE") %></div>
                                 </ItemTemplate>
-                                <EditItemTemplate>
-                                    <asp:TextBox ID="txtEditPrice" runat="server" Text='<%# Bind("SHOWPRICE") %>' CssClass="form-control form-control-sm"></asp:TextBox>
-                                </EditItemTemplate>
                             </asp:TemplateField>
 
                             <asp:TemplateField HeaderText="Actions">
                                 <ItemTemplate>
-                                    <div class="d-flex gap-1" style="min-width: 80px;">
-                                        <asp:LinkButton ID="btnEdit" runat="server" CommandName="Edit" CssClass="btn btn-sm btn-outline-secondary p-1"><i class="bi bi-pencil"></i></asp:LinkButton>
-                                        <asp:LinkButton ID="btnDelete" runat="server" CommandName="Delete" CssClass="btn btn-sm btn-outline-danger p-1" OnClientClick="return confirm('Cancel screening?');"><i class="bi bi-x-square"></i></asp:LinkButton>
+                                    <div class="d-flex gap-2" style="justify-content: flex-end;">
+                                        <button type="button" class="btn-action text-info" title="Quick View" style="background: none; border: none; padding: 0;"
+                                            onclick='<%# GetViewModalScript(Eval("MovieTitle"), Eval("HallName"), Eval("SHOWDATE"), Eval("SHOWTIME"), Eval("SHOWPRICE"), Eval("ISHOLIDAY"), Eval("ISNEWRELEASE")) %>'>
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary p-1" title="Edit Schedule"
+                                            onclick='<%# GetEditModalScript(Eval("SHOWID"), Eval("SHOWDATE"), Eval("SHOWTIME"), Eval("SHOWPRICE"), Eval("MOVIEID"), Eval("HALLID"), Eval("ISHOLIDAY"), Eval("ISNEWRELEASE")) %>'>
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger p-1" title="Cancel Screening"
+                                            onclick='<%# GetDeleteModalScript(Eval("SHOWID"), Eval("MovieTitle"), Eval("SHOWTIME")) %>'>
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
                                     </div>
                                 </ItemTemplate>
-                                <EditItemTemplate>
-                                    <div class="d-flex gap-1 text-nowrap">
-                                        <asp:LinkButton ID="btnUpdate" runat="server" CommandName="Update" CssClass="btn btn-sm btn-success extra-small p-1 px-2">Update</asp:LinkButton>
-                                        <asp:LinkButton ID="btnCancel" runat="server" CommandName="Cancel" CssClass="btn btn-sm btn-secondary extra-small p-1 px-2">Exit</asp:LinkButton>
-                                    </div>
-                                </EditItemTemplate>
                             </asp:TemplateField>
                         </Columns>
+                        <PagerStyle CssClass="p-3 border-top pagination-container" />
                     </asp:GridView>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Edit Modal -->
+    <asp:HiddenField ID="hfEditShowID" runat="server" />
+    <div class="modal fade" id="showEditModal" tabindex="-1" aria-labelledby="showEditModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-info text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="showEditModalLabel"><i class="bi bi-calendar-event me-2"></i> Update Screening</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-7">
+                            <label class="form-label small fw-bold text-muted">Show Date</label>
+                            <asp:TextBox ID="txtEditDateModal" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label small fw-bold text-muted">Show Time</label>
+                            <asp:DropDownList ID="DdlEditTimeModal" runat="server" CssClass="form-select">
+                                <asp:ListItem Text="Morning (10:00)" Value="Morning" />
+                                <asp:ListItem Text="Evening (18:00)" Value="Evening" />
+                                <asp:ListItem Text="Night (21:00)" Value="Night" />
+                            </asp:DropDownList>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-muted">Ticket Price (Rs.)</label>
+                            <asp:TextBox ID="txtEditPriceModal" runat="server" TextMode="Number" step="0.01" CssClass="form-control"></asp:TextBox>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-muted">Movie</label>
+                            <asp:DropDownList ID="DdlEditMovieModal" runat="server" CssClass="form-select"
+                                DataSourceID="SqlDataSourceMovieDropdown" DataTextField="TITLE" DataValueField="MOVIEID">
+                            </asp:DropDownList>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-muted">Hall</label>
+                            <asp:DropDownList ID="DdlEditHallModal" runat="server" CssClass="form-select"
+                                DataSourceID="SqlDataSourceHallDropdown" DataTextField="HALLNAME" DataValueField="HALLID">
+                            </asp:DropDownList>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label class="form-label small fw-bold text-muted mb-2">Special Flags</label>
+                            <div class="d-flex gap-4 p-2 bg-light rounded border border-dashed">
+                                <div class="form-check d-flex align-items-center gap-2 mb-0">
+                                    <asp:CheckBox ID="chkEditHoliday" runat="server" CssClass="form-check-input-custom" />
+                                    <asp:Label ID="lblEditHoliday" runat="server" AssociatedControlID="chkEditHoliday" CssClass="form-check-label mb-0 small fw-bold text-dark">Holiday</asp:Label>
+                                </div>
+                                <div class="form-check d-flex align-items-center gap-2 mb-0">
+                                    <asp:CheckBox ID="chkEditNew" runat="server" CssClass="form-check-input-custom" />
+                                    <asp:Label ID="lblEditNew" runat="server" AssociatedControlID="chkEditNew" CssClass="form-check-label mb-0 small fw-bold text-dark">New Release</asp:Label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-3 pt-0 gap-2">
+                    <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2" data-bs-dismiss="modal">Cancel</button>
+                    <asp:Button ID="btnSaveEdit" runat="server" Text="Update Schedule" CssClass="btn btn-info text-white flex-grow-1 py-2 fw-bold" OnClick="btnSaveEdit_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <asp:HiddenField ID="hfDeleteShowID" runat="server" />
+    <div class="modal fade" id="showDeleteModal" tabindex="-1" aria-labelledby="showDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg text-center">
+                <div class="modal-body p-4">
+                    <div class="text-danger mb-3" style="font-size: 3.5rem;">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Cancel Screening?</h5>
+                    <p class="text-muted small">Are you sure you want to remove <span id="deleteShowMovie" class="fw-bold text-dark"></span> at <span id="deleteShowTime" class="fw-bold text-dark"></span>? This will affect booking availability.</p>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <asp:Button ID="btnConfirmDelete" runat="server" Text="Confirm Cancellation" CssClass="btn btn-danger fw-bold py-2" OnClick="btnConfirmDelete_Click" />
+                        <button type="button" class="btn btn-light py-2" data-bs-dismiss="modal">Keep Screening</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal fade" id="showViewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
+                <div class="bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+                    <div class="fw-bold m-0 d-flex align-items-center gap-2"><i class="bi bi-film"></i> Screening Details</div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="font-size: 0.8rem;"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="avatar-circle mx-auto mb-3 bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 2.5rem; border-radius: 50%;">
+                        <i class="bi bi-ticket-perforated"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1 text-dark" id="vShowMovie">Movie Title</h4>
+                    <div class="small fw-medium text-success mb-4" id="vShowHall">Hall Name</div>
+                    
+                    <div class="row text-start gx-4 gy-4 border-top pt-4">
+                        <div class="col-6">
+                            <div class="text-muted mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600; text-transform: uppercase;">Screening Date</div>
+                            <div class="text-dark fw-medium small" id="vShowDate">Date</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600; text-transform: uppercase;">Time Slot</div>
+                            <div class="text-dark fw-medium small" id="vShowTime">Time</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600; text-transform: uppercase;">Ticket Price</div>
+                            <div class="text-dark fw-medium small font-monospace text-success fw-bold" id="vShowPrice">Rs. 0</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600; text-transform: uppercase;">Status</div>
+                            <div id="vShowFlags"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 pt-0 bg-white">
+                    <button type="button" class="btn btn-secondary w-100 py-2 fw-medium" data-bs-dismiss="modal" style="background-color: #6c757d; border-color: #6c757d; border-radius: 6px;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function openViewModal(movie, hall, dateStr, timeStr, specTime, price, isHoliday, isNew) {
+            try {
+                document.getElementById('vShowMovie').innerText = movie;
+                document.getElementById('vShowHall').innerText = hall;
+                // Parse date for better display format
+                var dateObj = new Date(dateStr);
+                document.getElementById('vShowDate').innerText = isNaN(dateObj.getTime()) ? dateStr : dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                document.getElementById('vShowTime').innerText = timeStr + " (" + specTime + ")";
+                document.getElementById('vShowPrice').innerText = "Rs. " + parseFloat(price).toFixed(2);
+                
+                var flagsHtml = "";
+                if (isHoliday === "Yes") flagsHtml += '<span class="badge bg-danger me-1">Holiday</span>';
+                if (isNew === "Yes") flagsHtml += '<span class="badge bg-warning text-dark">New Release</span>';
+                if (!flagsHtml) flagsHtml = '<span class="text-muted small">None</span>';
+                document.getElementById('vShowFlags').innerHTML = flagsHtml;
+                
+                var modal = new bootstrap.Modal(document.getElementById('showViewModal'));
+                modal.show();
+            } catch (e) { console.error('Error:', e); }
+        }
+
+        function openEditModal(id, date, time, price, movieId, hallId, isHoliday, isNew) {
+            try {
+                document.getElementById('<%= hfEditShowID.ClientID %>').value = id;
+                document.getElementById('<%= txtEditDateModal.ClientID %>').value = date;
+                document.getElementById('<%= DdlEditTimeModal.ClientID %>').value = time;
+                document.getElementById('<%= txtEditPriceModal.ClientID %>').value = price;
+                document.getElementById('<%= DdlEditMovieModal.ClientID %>').value = movieId;
+                document.getElementById('<%= DdlEditHallModal.ClientID %>').value = hallId;
+                
+                document.getElementById('<%= chkEditHoliday.ClientID %>').checked = (isHoliday === "Yes");
+                document.getElementById('<%= chkEditNew.ClientID %>').checked = (isNew === "Yes");
+                
+                var modal = new bootstrap.Modal(document.getElementById('showEditModal'));
+                modal.show();
+            } catch (e) { console.error('Error:', e); }
+        }
+
+        function openDeleteModal(id, movie, time) {
+            try {
+                document.getElementById('<%= hfDeleteShowID.ClientID %>').value = id;
+                document.getElementById('deleteShowMovie').innerText = movie;
+                document.getElementById('deleteShowTime').innerText = time;
+                
+                var modal = new bootstrap.Modal(document.getElementById('showDeleteModal'));
+                modal.show();
+            } catch (e) { console.error('Error:', e); }
+        }
+    </script>
+
     <style>
         .font-monospace { font-family: 'JetBrains Mono', 'Courier New', monospace; }
         .bg-info-subtle { background-color: #ecfeff; }
         .extra-small { font-size: 0.7rem; }
+        
+        /* Custom checkbox alignment */
+        .form-check-input-custom input {
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1.5px solid #cbd5e1;
+        }
+        .form-check-input-custom input:checked {
+            background-color: #06b6d4;
+            border-color: #06b6d4;
+        }
+        .form-check-label {
+            cursor: pointer;
+            user-select: none;
+            font-weight: 500;
+        }
     </style>
 
     <asp:SqlDataSource ID="SqlDataSourceShows" runat="server" 
         ConnectionString="<%$ ConnectionStrings:KumariCinemaDB %>" 
         ProviderName="<%$ ConnectionStrings:KumariCinemaDB.ProviderName %>" 
         SelectCommand="SELECT s.SHOWID, s.SHOWDATE, s.&quot;SHOW&quot; AS SHOWTIME, s.SHOWPRICE, s.ISHOLIDAY, s.ISNEWRELEASE, s.MOVIEID, s.HALLID, m.TITLE as MovieTitle, h.HALLNAME as HallName FROM &quot;SHOW&quot; s LEFT JOIN MOVIE m ON s.MOVIEID = m.MOVIEID LEFT JOIN HALL h ON s.HALLID = h.HALLID ORDER BY s.SHOWDATE DESC" 
-        DeleteCommand="DELETE FROM &quot;SHOW&quot; WHERE SHOWID = :SHOWID" 
+        DeleteCommand="BEGIN DELETE FROM TICKET WHERE TICKETID IN (SELECT TICKETID FROM BOOKING_TICKET WHERE BOOKINGID IN (SELECT BOOKINGID FROM BOOKING WHERE SHOWID = :SHOWID)); DELETE FROM BOOKING_TICKET WHERE BOOKINGID IN (SELECT BOOKINGID FROM BOOKING WHERE SHOWID = :SHOWID); DELETE FROM USER_BOOKING WHERE BOOKINGID IN (SELECT BOOKINGID FROM BOOKING WHERE SHOWID = :SHOWID); DELETE FROM BOOKING WHERE SHOWID = :SHOWID; DELETE FROM &quot;SHOW&quot; WHERE SHOWID = :SHOWID; END;" 
         InsertCommand="INSERT INTO &quot;SHOW&quot; (SHOWID, SHOWDATE, &quot;SHOW&quot;, SHOWPRICE, ISHOLIDAY, ISNEWRELEASE, MOVIEID, HALLID) VALUES (:SHOWID, TO_DATE(:SHOWDATE, 'YYYY-MM-DD'), :SHOWTIME, :SHOWPRICE, :ISHOLIDAY, :ISNEWRELEASE, :MOVIEID, :HALLID)" 
-        UpdateCommand="UPDATE &quot;SHOW&quot; SET SHOWDATE = TO_DATE(:SHOWDATE, 'YYYY-MM-DD'), &quot;SHOW&quot; = :SHOWTIME, SHOWPRICE = :SHOWPRICE, ISHOLIDAY = :ISHOLIDAY, MOVIEID = :MOVIEID, HALLID = :HALLID WHERE SHOWID = :SHOWID">
+        UpdateCommand="UPDATE &quot;SHOW&quot; SET SHOWDATE = TO_DATE(:SHOWDATE, 'YYYY-MM-DD'), &quot;SHOW&quot; = :SHOWTIME, SHOWPRICE = :SHOWPRICE, ISHOLIDAY = :ISHOLIDAY, ISNEWRELEASE = :ISNEWRELEASE, MOVIEID = :MOVIEID, HALLID = :HALLID WHERE SHOWID = :SHOWID">
         <DeleteParameters><asp:Parameter Name="SHOWID" Type="Decimal" /></DeleteParameters>
         <InsertParameters>
             <asp:Parameter Name="SHOWID" Type="Decimal" />
@@ -191,6 +407,7 @@
             <asp:Parameter Name="SHOWTIME" Type="String" />
             <asp:Parameter Name="SHOWPRICE" Type="Decimal" />
             <asp:Parameter Name="ISHOLIDAY" Type="String" />
+            <asp:Parameter Name="ISNEWRELEASE" Type="String" />
             <asp:Parameter Name="MOVIEID" Type="Decimal" />
             <asp:Parameter Name="HALLID" Type="Decimal" />
             <asp:Parameter Name="SHOWID" Type="Decimal" />
